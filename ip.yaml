@@ -1,0 +1,470 @@
+name: ibex
+version: 0.1.0
+spec: '0.1'
+kind: ip
+lang: sv
+identity:
+  slug: ibex-tapeout-foreign
+  display_name: Ibex
+  summary: lowRISC's RV32 core, the one inside OpenTitan, taken as a black box.
+  category: processor
+  subcategories:
+  - riscv
+  ip_family: ibex
+  integration_profile: []
+  maturity: planned
+contract:
+  version: 1
+  ctrl:
+    shape: none
+    aw: 32
+    dw: 32
+params:
+  # 这 5 个不是标量，本版留在默认值上：
+  #   PMPRstAddr = [34'h0,34'h0,34'h0,34'h0,34'h0,34'h0,34'
+  #   PMPRstCfg = [6'b0,6'b0,6'b0,6'b0,6'b0,6'b0,6'b0,6'b0
+  #   RndCnstIbexKey = 128'h14e8cecae3040d5e12286bb3cc113298
+  #   RndCnstIbexNonce = 64'hf79780bc735f3843
+  #   RndCnstLfsrPerm = 160'd17247228450594708593364553037701681
+  baseIsa:
+    type: choice
+    values:
+    - BaseIsaRV32I
+    - BaseIsaRV32IorCHERIoT
+    default: BaseIsaRV32I
+  cheriotRevBitmapAddrWidth:
+    type: int
+    default: 11
+  cheriotRevBitmapBaseAddr:
+    type: int
+    default: 0
+  csrMimpId:
+    type: int
+    default: 0
+  csrMvendorId:
+    type: int
+    default: 0
+  dbgHwBreakNum:
+    type: int
+    default: 1
+  dmAddrMask:
+    type: int
+    default: 4095
+  dmBaseAddr:
+    type: int
+    default: 437321728
+  dmExceptionAddr:
+    type: int
+    default: 437323784
+  dmHaltAddr:
+    type: int
+    default: 437323776
+  iCacheScrNumPrinceRoundsHalf:
+    type: int
+    default: 2
+  lockstepOffset:
+    type: int
+    default: 1
+  mhpmCounterNum:
+    type: int
+    default: 0
+  mhpmCounterWidth:
+    type: int
+    default: 40
+  memDataWidth:
+    type: int
+    default: 32
+  pmpGranularity:
+    type: int
+    default: 0
+  pmpNumRegions:
+    type: int
+    default: 4
+  pmpRstMsecCfg:
+    type: int
+    default: 0
+  rv32B:
+    type: choice
+    values:
+    - RV32BNone
+    - RV32BBalanced
+    - RV32BOTEarlGrey
+    - RV32BFull
+    default: RV32BNone
+  rv32M:
+    type: choice
+    values:
+    - RV32MNone
+    - RV32MSlow
+    - RV32MFast
+    - RV32MSingleCycle
+    default: RV32MFast
+  rv32ZC:
+    type: choice
+    values:
+    - RV32Zca
+    - RV32ZcaZcb
+    - RV32ZcaZcmp
+    - RV32ZcaZcbZcmp
+    default: RV32ZcaZcbZcmp
+  regFile:
+    type: choice
+    values:
+    - RegFileFF
+    - RegFileFPGA
+    - RegFileLatch
+    default: RegFileFF
+  rndCnstLfsrSeed:
+    type: int
+    default: 2891135988
+features:
+  branchPredictor:
+    type: bool
+    default: false
+  branchTargetALU:
+    type: bool
+    default: false
+  dbgTriggerEn:
+    type: bool
+    default: false
+  iCache:
+    type: bool
+    default: false
+  iCacheECC:
+    type: bool
+    default: false
+  iCacheScramble:
+    type: bool
+    default: false
+  iCacheTweakInfection:
+    type: bool
+    default: false
+  memECC:
+    type: bool
+    default: false
+  pmpEnable:
+    type: bool
+    default: false
+  rv32E:
+    type: bool
+    default: false
+  secureIbex:
+    type: bool
+    default: false
+  writebackStage:
+    type: bool
+    default: false
+emit:
+- kind: foreign
+  lang: sv
+  top: ibex_top
+  rtl:
+  - third_party/ibex/rtl/ibex_alu.sv
+  - third_party/ibex/rtl/ibex_branch_predict.sv
+  - third_party/ibex/rtl/ibex_cheriot_ex.sv
+  - third_party/ibex/rtl/ibex_cheriot_pkg.sv
+  - third_party/ibex/rtl/ibex_compressed_decoder.sv
+  - third_party/ibex/rtl/ibex_controller.sv
+  - third_party/ibex/rtl/ibex_core.sv
+  - third_party/ibex/rtl/ibex_counter.sv
+  - third_party/ibex/rtl/ibex_cs_registers.sv
+  - third_party/ibex/rtl/ibex_csr.sv
+  - third_party/ibex/rtl/ibex_decoder.sv
+  - third_party/ibex/rtl/ibex_dummy_instr.sv
+  - third_party/ibex/rtl/ibex_ex_block.sv
+  - third_party/ibex/rtl/ibex_fetch_fifo.sv
+  - third_party/ibex/rtl/ibex_icache.sv
+  - third_party/ibex/rtl/ibex_id_stage.sv
+  - third_party/ibex/rtl/ibex_if_stage.sv
+  - third_party/ibex/rtl/ibex_load_store_unit.sv
+  - third_party/ibex/rtl/ibex_lockstep.sv
+  - third_party/ibex/rtl/ibex_multdiv_fast.sv
+  - third_party/ibex/rtl/ibex_multdiv_slow.sv
+  - third_party/ibex/rtl/ibex_pkg.sv
+  - third_party/ibex/rtl/ibex_pmp.sv
+  - third_party/ibex/rtl/ibex_prefetch_buffer.sv
+  - third_party/ibex/rtl/ibex_register_file_ff.sv
+  - third_party/ibex/rtl/ibex_register_file_fpga.sv
+  - third_party/ibex/rtl/ibex_register_file_latch.sv
+  - third_party/ibex/rtl/ibex_top.sv
+  - third_party/ibex/rtl/ibex_top_tracing.sv
+  - third_party/ibex/rtl/ibex_tracer.sv
+  - third_party/ibex/rtl/ibex_tracer_pkg.sv
+  - third_party/ibex/rtl/ibex_trvk.sv
+  - third_party/ibex/rtl/ibex_wb_stage.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_alert_pkg.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_alert_receiver.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_alert_sender.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_alert_to_diff.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_arbiter_fixed.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_arbiter_ppc.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_arbiter_tree.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_arbiter_tree_dup.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_ascon_duplex.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_ascon_pkg.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_ascon_round.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_ascon_sbox.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_assert.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_blanker.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_cdc_rand_delay.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_cipher_pkg.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_clock_gating_sync.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_clock_meas.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_clock_timeout.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_count.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_count_pkg.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_crc32.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_diff_decode.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_diff_encode.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_diff_to_alert.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_dom_and_2share.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_double_lfsr.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_edge_detector.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_edn_req.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_esc_pkg.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_esc_receiver.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_esc_sender.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_fifo_async.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_fifo_async_simple.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_fifo_async_sram_adapter.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_fifo_sync.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_fifo_sync_cnt.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_filter.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_filter_ctr.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_flop_macros.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_gate_gen.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_gf_mult.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_intr_hw.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_keccak.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_lc_and_hardened.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_lc_combine.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_lc_dec.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_lc_or_hardened.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_lc_sender.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_lc_sync.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_leading_one_ppc.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_lfsr.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_max_tree.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_msb_extend.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_mubi12_dec.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_mubi12_sender.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_mubi12_sync.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_mubi16_dec.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_mubi16_sender.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_mubi16_sync.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_mubi20_dec.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_mubi20_sender.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_mubi20_sync.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_mubi24_dec.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_mubi24_sender.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_mubi24_sync.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_mubi28_dec.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_mubi28_sender.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_mubi28_sync.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_mubi32_dec.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_mubi32_sender.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_mubi32_sync.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_mubi4_dec.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_mubi4_sender.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_mubi4_sync.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_mubi8_dec.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_mubi8_sender.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_mubi8_sync.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_mubi_pkg.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_multibit_sync.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_onehot_check.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_onehot_enc.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_onehot_mux.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_packer.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_packer_fifo.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_pad_wrapper_pkg.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_present.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_prince.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_pulse_sync.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_racl_error_arb.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_ram_1p_adv.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_ram_1p_scr.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_ram_1r1w_adv.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_ram_1r1w_async_adv.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_ram_2p_adv.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_ram_2p_async_adv.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_reg_cdc.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_reg_cdc_arb.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_reg_we_check.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_rom_adv.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_sdc_example.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_sec_anchor_buf.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_sec_anchor_flop.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_22_16_dec.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_22_16_enc.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_28_22_dec.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_28_22_enc.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_39_32_dec.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_39_32_enc.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_64_57_dec.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_64_57_enc.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_72_64_dec.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_72_64_enc.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_22_16_dec.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_22_16_enc.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_39_32_dec.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_39_32_enc.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_72_64_dec.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_72_64_enc.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_76_68_dec.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_hamming_76_68_enc.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_22_16_dec.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_22_16_enc.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_28_22_dec.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_28_22_enc.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_39_32_dec.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_39_32_enc.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_64_57_dec.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_64_57_enc.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_72_64_dec.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_72_64_enc.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_22_16_dec.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_22_16_enc.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_39_32_dec.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_39_32_enc.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_72_64_dec.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_72_64_enc.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_76_68_dec.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_inv_hamming_76_68_enc.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_secded_pkg.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_sha2.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_sha2_32.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_sha2_pad.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_sha2_pkg.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_slicer.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_sparse_fsm_flop.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_sram_arbiter.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_subreg.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_subreg_arb.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_subreg_ext.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_subreg_pkg.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_subreg_shadow.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_subst_perm.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_sum_tree.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_sync_reqack.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_sync_reqack_data.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_sync_slow_fast.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_trivium.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_trivium_pkg.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_util_pkg.sv
+  - third_party/ibex/vendor/lowrisc_ip/ip/prim/rtl/prim_xoshiro256pp.sv
+  params:
+    BaseIsa: baseIsa
+    BranchPredictor: branchPredictor
+    BranchTargetALU: branchTargetALU
+    CheriotRevBitmapAddrWidth: cheriotRevBitmapAddrWidth
+    CheriotRevBitmapBaseAddr: cheriotRevBitmapBaseAddr
+    CsrMimpId: csrMimpId
+    CsrMvendorId: csrMvendorId
+    DbgHwBreakNum: dbgHwBreakNum
+    DbgTriggerEn: dbgTriggerEn
+    DmAddrMask: dmAddrMask
+    DmBaseAddr: dmBaseAddr
+    DmExceptionAddr: dmExceptionAddr
+    DmHaltAddr: dmHaltAddr
+    ICache: iCache
+    ICacheECC: iCacheECC
+    ICacheScrNumPrinceRoundsHalf: iCacheScrNumPrinceRoundsHalf
+    ICacheScramble: iCacheScramble
+    ICacheTweakInfection: iCacheTweakInfection
+    LockstepOffset: lockstepOffset
+    MHPMCounterNum: mhpmCounterNum
+    MHPMCounterWidth: mhpmCounterWidth
+    MemDataWidth: memDataWidth
+    MemECC: memECC
+    PMPEnable: pmpEnable
+    PMPGranularity: pmpGranularity
+    PMPNumRegions: pmpNumRegions
+    PMPRstMsecCfg: pmpRstMsecCfg
+    RV32B: rv32B
+    RV32E: rv32E
+    RV32M: rv32M
+    RV32ZC: rv32ZC
+    RegFile: regFile
+    RndCnstLfsrSeed: rndCnstLfsrSeed
+    SecureIbex: secureIbex
+    WritebackStage: writebackStage
+  clock:
+    port: clk_i
+  reset:
+    port: rst_ni
+    active: low
+    sync: true
+  ports:
+  # 取指与访存各一条 Ibex 自己的简单存储协议：req/gnt/rvalid，不是 AXI
+  - endpoint: instr
+    kind: transaction
+    role: manager
+    profile: ibex-mem
+    prefix: instr_
+  - endpoint: data
+    kind: transaction
+    role: manager
+    profile: ibex-mem
+    prefix: data_
+  - endpoint: irq
+    kind: event
+    role: sink
+    prefix: irq_
+  # 安全告警：SecureIbex 打开时才有内容，端口一直在
+  - endpoint: alert
+    kind: event
+    role: source
+    prefix: alert_
+  # 指令缓存的 SRAM 配置引脚，交给实现存储的那一方
+  - endpoint: ram
+    kind: physical
+    type: IbexRamCfg
+    prefix: ram_cfg_
+  # 取指扰码的密钥请求，iCacheScramble 打开时才用
+  - endpoint: scramble
+    kind: transaction
+    role: manager
+    profile: ibex-scramble
+    prefix: scramble_
+  # CHERIoT 的撤销位图通路，cheriotEnableI 为真时才走
+  - endpoint: trvk
+    kind: transaction
+    role: manager
+    profile: cheriot-revocation
+    prefix: trvk_
+  - endpoint: pins
+    kind: physical
+    type: IbexPins
+    map:
+      bootAddrI: boot_addr_i
+      cheriotEnableI: cheriot_enable_i
+      coreSleepO: core_sleep_o
+      crashDumpO: crash_dump_o
+      debugReqI: debug_req_i
+      doubleFaultSeenO: double_fault_seen_o
+      fetchEnableI: fetch_enable_i
+      hartIdI: hart_id_i
+      lockstepCmpEnO: lockstep_cmp_en_o
+      mcounterenWritableI: mcounteren_writable_i
+      scanRstNi: scan_rst_ni
+      testEnI: test_en_i
+  limits:
+  - 存储口是 Ibex 自己的 req/gnt/rvalid，不是 AXI；要挂总线得在外面加桥
+  - rvfi 那组端口要 RVFI 宏才存在，本声明不含
+  - PMP 的复位配置与三个随机常数是数组，不是标量，留在默认值上
+test:
+  # 上游没有预编译的固件：examples/simple_system 要 RISC-V 工具链现编。
+  # 所以这一版没有上游测试，只有逐点展开与声明回执。工具链接上再补
+  noarea:
+  - baseIsa
+  - cheriotRevBitmapAddrWidth
+  - cheriotRevBitmapBaseAddr
+  - csrMimpId
+  - csrMvendorId
+  - dbgHwBreakNum
+  - dmAddrMask
+  - dmBaseAddr
+targets:
+  foreign:
+    driver: foreign
